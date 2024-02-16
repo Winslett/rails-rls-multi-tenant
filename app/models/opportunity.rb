@@ -1,6 +1,7 @@
 class Opportunity < ApplicationRecord
 
-  belongs_to :team
+  acts_as_tenant :team
+
   belongs_to :user
 
   has_many :opportunity_contacts

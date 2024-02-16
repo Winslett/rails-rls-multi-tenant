@@ -395,12 +395,93 @@ ALTER TABLE ONLY public.contacts
 
 
 --
+-- Name: contacts; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: opportunities; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.opportunities ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: opportunity_contacts; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.opportunity_contacts ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: contacts salesmanager_contacts_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesmanager_contacts_policy ON public.contacts TO salesmanager USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: opportunities salesmanager_opportunities_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesmanager_opportunities_policy ON public.opportunities TO salesmanager USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: opportunity_contacts salesmanager_opportunity_contacts_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesmanager_opportunity_contacts_policy ON public.opportunity_contacts TO salesmanager USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: users salesmanager_users_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesmanager_users_policy ON public.users TO salesmanager USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: contacts salesperson_contacts_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesperson_contacts_policy ON public.contacts TO salesperson USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: opportunities salesperson_opportunities_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesperson_opportunities_policy ON public.opportunities TO salesperson USING ((user_id = (NULLIF(current_setting('rls.user_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: opportunity_contacts salesperson_opportunity_contacts_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesperson_opportunity_contacts_policy ON public.opportunity_contacts TO salesperson USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: users salesperson_users_policy; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY salesperson_users_policy ON public.users TO salesperson USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+
+
+--
+-- Name: users; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240214170118'),
 ('20240129183928'),
 ('20240129182842'),
 ('20240129182834'),

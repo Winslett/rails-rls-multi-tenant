@@ -2,6 +2,8 @@
 5.times do
   team = Team.create!(name: Faker::Company.name)
 
+  ActsAsTenant.current_tenant = team
+
   5.times do
     team.users.create!(name: Faker::Name.name, email: Faker::Internet.email)
   end
@@ -14,7 +16,7 @@
     )
   end
 
-  rand(8).times do
+  (rand(8) + 1).times do
     opportunity = team.opportunities.create!(
       name: Faker::Company.name,
       status: ['open', 'won', 'lost'].sample,

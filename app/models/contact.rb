@@ -1,6 +1,7 @@
 class Contact < ApplicationRecord
 
-  belongs_to :team
+  acts_as_tenant :team
+
   belongs_to :opportunity, optional: true
 
 end
