@@ -12,7 +12,18 @@ class AddRlsPoliciesToTables < ActiveRecord::Migration[7.1]
       database: database_uri.path[1..-1]
     )
 
+
     postgres.connection.execute(<<SQL)
+CREATE POLICY appuser_team_policy ON teams FOR ALL
+  TO #{database_uri.user}
+USING (id = NULLIF(current_setting('rls.team_id', false), '')::integer);
+SQL
+
+    postgres.connection.execute(<<SQL)
+CREATE POLICY salesperson_team_policy ON teams FOR ALL
+  TO salesperson
+USING (id = NULLIF(current_setting('rls.team_id', false), '')::integer);
+
 CREATE POLICY salesperson_contacts_policy ON contacts FOR ALL
 	TO salesperson
 USING (team_id = NULLIF(current_setting('rls.team_id', false), '')::integer);
@@ -31,6 +42,10 @@ USING (team_id = NULLIF(current_setting('rls.team_id', false), '')::integer);
 SQL
 
     postgres.connection.execute(ActiveRecord::Base.sanitize_sql_array([<<SQL, database_uri.password]))
+CREATE POLICY salesmanager_team_policy ON teams FOR ALL
+  TO salesmanager
+USING (id = NULLIF(current_setting('rls.team_id', false), '')::integer);
+
 CREATE POLICY salesmanager_contacts_policy ON contacts FOR ALL
 	TO salesmanager
 USING (team_id = NULLIF(current_setting('rls.team_id', false), '')::integer);
@@ -53,11 +68,6 @@ ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE opportunities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE opportunity_contacts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-SQL
-
-    postgres.connection.execute(<<SQL)
-GRANT ALL ON ALL TABLES IN SCHEMA public TO salesperson;
-GRANT ALL ON ALL TABLES IN SCHEMA public TO salesmanager;
 SQL
   end
 

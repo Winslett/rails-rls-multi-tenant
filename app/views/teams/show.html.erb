@@ -1,0 +1,95 @@
+<h1>Team: <%= @team.name %></h1>
+
+<div class='d-flex flex-wrap'>
+  <div class='col-md-6'>
+    This page really shows the power of Row Level Security. Currently, you are viewing the page as a
+    <%= @postgres_user %>, but if you choose a different user to the right with a different user-type
+    you will see a different list of opportunities below. You'll notice that the query we send to Postgres
+    does not change, but we are using a <code>POLICY</code> to limit the results.
+  </div>
+  <div class='col-md-6'>
+    <h2>Team Personelle</h2>
+
+    <p>Click on a different team member to view the application as them.</p>
+
+    <ul>
+    <% @users.each do |user| %>
+      <li class='<%= "fw-bold" if user == current_user %>'><%= link_to user.name, new_session_path(user_id: user.id) %> - <%= user.role %></li>
+    <% end %>
+    </ul>
+  </div>
+
+  <div class='col-md-12'>
+    <h2>Team Opportunities</h2>
+
+    <p>The below list of opportunities is based on the permissions of the current user.  If you are a manager, you can see all.  If you are a salesperson, you can only see those assigned to you.</p>
+
+    <code>
+      <pre>
+        # To generate this list, the Postgres user '<%= @postgres_user %>' 
+        # ran the following query:
+
+         <%= @postgres_opportunities_sql %>
+
+        # This is the policy on the opportunities table for that user:
+
+        <% if @postgres_user == 'salesperson' %>
+         CREATE POLICY salesperson_opportunity_contacts_policy ON public.opportunity_contacts TO salesperson
+         USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+        <% elsif @postgres_user == 'salesmanager' %>
+         CREATE POLICY salesmanager_opportunities_policy ON public.opportunities TO salesmanager
+         USING ((team_id = (NULLIF(current_setting('rls.team_id'::text, false), ''::text))::integer));
+        <% end %>
+
+        # The rls.team_id variable is currently set to:
+
+        <%= @postgres_rls_team_query %>
+      </pre>
+    </code>
+
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Assigned To</th>
+        </tr>
+      </thead>
+      <% @opportunities.each do |opportunity| %>
+        <tr>
+          <td><%= opportunity.name %></td>
+          <td><%= opportunity.user.name %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+
+
+  <div class='col-md-12'>
+    <h2>Team Contacts</h2>
+
+    <code>
+      <pre>
+        # To generate this list, the Postgres user '<%= @postgres_user %>' 
+        # ran the following query:
+
+        <%= @postgres_contacts_sql %>
+      </pre>
+    </code>
+
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>E-mail</th>
+          <th>Opportunities</th>
+        </tr>
+      </thead>
+      <% @contacts.each do |contact| %>
+        <tr>
+          <td><%= contact.name %></td>
+          <td><%= contact.email %></td>
+          <td><%= contact.opportunity_contacts.count %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>

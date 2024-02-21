@@ -9,6 +9,16 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: user_roles; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.user_roles AS ENUM (
+    'salesperson',
+    'salesmanager'
+);
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -142,7 +152,8 @@ CREATE TABLE public.teams (
     id bigint NOT NULL,
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    subdomain character varying
 );
 
 
@@ -175,7 +186,8 @@ CREATE TABLE public.users (
     email character varying,
     team_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    role public.user_roles DEFAULT 'salesperson'::public.user_roles NOT NULL
 );
 
 
@@ -332,6 +344,13 @@ CREATE INDEX index_opportunity_contacts_on_team_id ON public.opportunity_contact
 
 
 --
+-- Name: index_teams_on_subdomain; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_teams_on_subdomain ON public.teams USING btree (subdomain);
+
+
+--
 -- Name: index_users_on_team_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -481,6 +500,8 @@ ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240216161312'),
+('20240216160730'),
 ('20240214170118'),
 ('20240129183928'),
 ('20240129182842'),

@@ -1,0 +1,41 @@
+<!-- using bootstrap and d-flex to generate a 2 column layout that collapses to a single column on mobile -->
+
+<div class="d-flex flex-wrap">
+  <div class="col-md-6">
+    <h1>Row Level Security</h1>
+
+    <p>Row level security is a feature of Postgres that allows you to restrict access to rows in a table based on the user that is querying the table. This is a powerful feature that can be used to enforce security at the database level, and can be used to enforce security in a multi-tenant application.</p>
+
+    <p>This is a sample application that demonstrates how to use row level security in a multi-tenant application. The application is a simple CRM that allows you to manage contacts and opportunities. The application is designed to be used by a team of users, and each user can only see the contacts and opportunities that belong to their team.</p>
+
+    <p><strong>To try it out</strong>, we have a list of users. Click on a user to login as that person. Once you are logged in, you will only be able to see the contacts and opportunities that belong to your team.</p>
+
+    <p>On each page, we will show you the query taht is run and the user that is run in the database. This is to demonstrate how row level security is enforced at the database level.</p>
+
+    <code>
+      <pre>
+        # To generate this page, the Postgres user '<%= @postgres_user %>' 
+        # ran the following query:
+
+        <%= @postgres_sql %>
+      </pre>
+    </code>
+  </div>
+
+  <% @teams.each do |team| %>
+  <div class="col-md-3 pt-2">
+    <h4><%= team.name %></h4>
+
+    <ul>
+      <li>Opportunities: <%= team.opportunities.count %></li>
+      <li>Contacts: <%= team.contacts.count %></li>
+    </ul>
+
+    <ul>
+      <% team.users.each do |user| %>
+        <li><%= link_to user.name, new_session_path(user_id: user.id) %> - <%= user.role %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+</div>

@@ -1,11 +1,11 @@
 
-5.times do
-  team = Team.create!(name: Faker::Company.name)
+5.times do |i|
+  team = Team.create!(name: Faker::Company.name, subdomain: "team#{i}")
 
   ActsAsTenant.current_tenant = team
 
   5.times do
-    team.users.create!(name: Faker::Name.name, email: Faker::Internet.email)
+    team.users.create!(name: Faker::Name.name, email: Faker::Internet.email, role: (rand > 0.7 ? 'salesmanager' : 'salesperson'))
   end
 
   20.times do
