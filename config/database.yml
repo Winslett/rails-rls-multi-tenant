@@ -14,3 +14,7 @@ development:
 test:
   <<: *default
   url: <%= ENV['APP_DATABASE_URL'] %>
+
+production:
+  <<: *default
+  url: <%= ENV['APP_DATABASE_URL'] %>
