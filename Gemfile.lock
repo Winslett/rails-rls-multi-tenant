@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/ErwinM/acts_as_tenant
+  revision: 7e3bd8a534f309061a9c34b4ed3eb3576e2e065d
+  specs:
+    acts_as_tenant (1.0.1)
+      rails (>= 6.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -75,8 +82,6 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
-    acts_as_tenant (1.0.1)
-      rails (>= 6.0)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     base64 (0.2.0)
@@ -254,7 +259,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  acts_as_tenant
+  acts_as_tenant!
   bootsnap
   capybara
   debug
