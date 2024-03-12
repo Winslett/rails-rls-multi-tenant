@@ -1,6 +1,6 @@
 
 5.times do |i|
-  team = Team.create!(name: Faker::Company.name, subdomain: "team#{i}")
+  team = Team.create!(name: Faker::Company.name)
 
   ActsAsTenant.current_tenant = team
 

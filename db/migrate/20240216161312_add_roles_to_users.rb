@@ -1,4 +1,4 @@
-class AddRoelsToUsers < ActiveRecord::Migration[7.1]
+class AddRolesToUsers < ActiveRecord::Migration[7.1]
   def change
     create_enum :user_roles, ["salesperson", "salesmanager"]
 
