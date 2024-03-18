@@ -12,12 +12,14 @@ namespace :db_roles do
       adapter: 'postgresql')
 
     sql = if database_uri.password.present?
-            ActiveRecord::Base.sanatize_sql_array(["CREATE ROLE #{database_uri.user} WITH LOGIN CREATEDB PASSWORD ?;", database_uri.password])
+            ActiveRecord::Base.sanitize_sql_array(["CREATE ROLE #{database_uri.user} WITH LOGIN CREATEDB PASSWORD ?;", database_uri.password])
           else
             "CREATE ROLE #{database_uri.user} WITH LOGIN CREATEDB;"
           end
 
     admin_postgres.connection.execute(sql)
+
+    puts "Created user #{database_uri.user}"
   end
 
 
@@ -54,9 +56,11 @@ SQL
 GRANT ALL ON ALL TABLES IN SCHEMA public TO salesperson;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO salesmanager;
 SQL
+
+    puts "Created roles salesperson and salesmanager"
   end
 
-  task :refresh do
+  task :refresh_permissions do
     database_uri = URI.parse(ENV['APP_DATABASE_URL'])
     admin_database_uri = URI.parse(ENV['ADMIN_DATABASE_URL'])
 
@@ -72,6 +76,8 @@ SQL
 GRANT ALL ON ALL TABLES IN SCHEMA public TO salesperson;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO salesmanager;
 SQL
+
+    puts 'Permission refreshed on all tables for salesperson and salesmanager'
   end
 
 end

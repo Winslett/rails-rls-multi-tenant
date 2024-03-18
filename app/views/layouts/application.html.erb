@@ -19,13 +19,14 @@
         </a>
 
         <ul class="nav nav-pills">
-
-
           <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
         </ul>
       </header>
       <div class="p-3 text-bg-light">
         <div class="container">
+          <% if !current_page?(root_path) %>
+            <%= link_to "< Back to all teams", root_path %>
+          <% end %>
           <div class="text-end">
             <div>
               <% if current_user.present? %>
